@@ -1,0 +1,91 @@
+---
+title: ""
+format:
+  pdf:
+    documentclass: article
+    pdf-engine: xelatex
+    mainfont: "Times New Roman"
+    fontsize: 12pt
+    linestretch: 2
+    geometry:
+      - margin=1in
+    include-in-header:
+      text: |
+        \usepackage{setspace}
+        \usepackage{indentfirst}
+---
+
+```{=latex}
+\begin{titlepage}
+\begin{center}
+\vspace*{2in}
+
+{\large Sentiment Classification Interpretability on IMDb Movie Reviews\\
+Applying Shapley Additive Explanations (SHAP)}
+
+\vspace{1in}
+
+Eileen Murphy \\
+Student Number: 501113406
+
+\vspace{1in}
+
+Supervisor: [TBD]
+
+\vspace{1in}
+
+Date of Submission: September 29, 2026
+
+\end{center}
+\end{titlepage}
+```
+
+```{=latex}
+\begin{center}
+\textbf{Abstract}
+\end{center}
+```
+
+**Sentiment Classification Interpretability on IMDb Movie Reviews Applying Shapley Additive Explanations (SHAP)**
+
+In this paper, we propose using the IMDb Movie Reviews dataset to conduct sentiment analysis and apply SHAP to understand the words or phrases that contribute to its score. Taking the sentiment analysis out of the "black box" to having transparent scores gives users the ability to validate and correct while improving the model over time. In this way, the model will become an asset rather than a potential unknown liability. The problem with artificial intelligence is not the effectiveness, but the trust of people using it. Models are not perfect and sometimes models will fail in just one reading, but that could be the only reading people see and dismiss the model entirely, as a result.
+
+Using Krishnakumar and Abdou (2020) as a theme, research on arrhythmias with different diagnosed classifications provides an insightful look on how different patterns in the range of their measurements can not only enhance their diagnosis but also make it transparent on which measurements were the most indicative of their condition. Another important aspect is the "bellwether" methodology to filter high quality instances to train the model to improve its performance scores.
+
+**Proposed Approach**
+
+This research will train four classification models using Python SKLearn and/or KERAS:
+
+1. Logistic Regression (TF-IDF)
+2. Naive Bayes (TF-IDF)
+3. Random Forest (TF-IDF)
+4. LSTM (RNN) with Word Embeddings
+5. DistilBERT Transformer (? Maybe)
+
+SHAP values will be computed using Python SHAP packages. "Bellwether" instances will be identified from the SHAP scores, and models will be retrained on the bellwether subset. Finally, evaluation metrics will be calculated to assess model performance.
+
+**Research Questions**
+
+RQ1: How do SHAP results differ with Machine Learning and Deep Learning?
+
+RQ2: Does SHAP-based "bellwether" instance selection improve model performance? 
+
+RQ3: How reliable and consistent are SHAP explanations for sentiment analysis when manually validated with a random 200 records? How robust is the model when entering tricky worded reviews?
+
+RQ4: Which sentiment-driving words are the same across models, and which are model-specific?
+
+```{=latex}
+\begin{center}
+\textbf{References}
+\end{center}
+```
+
+```{=latex}
+\noindent\hangindent=0.5in\hangafter=1
+Lundberg, S. (2018). \textit{SHAP (SHapley Additive exPlanations) documentation}. Retrieved from https://shap.readthedocs.io/en/latest/
+
+\vspace{1em}
+
+\noindent\hangindent=0.5in\hangafter=1
+Krishnakumar, S., \& Abdou, T. (2020). Towards interpretable and maintainable supervised learning using Shapley values in arrhythmia. In \textit{Proceedings of the 30th Annual International Conference on Computer Science and Software Engineering} (CASCON '20) (pp. 23--32). IBM Corp. https://doi.org/10.5555/3432601.3432605
+```
