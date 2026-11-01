@@ -2,14 +2,19 @@
 
 ## build_imdb_csv.R
 
-Builds the cleaned, deduplicated IMDb labeled-review CSV used throughout the
+Builds the cleaned, deduplicated IMDb labeled-review CSVs used throughout the
 CIND860 SHAP project.
 
 **Input**: `data/IMDB Movies/aclImdb/{train,test}/{pos,neg}/*.txt`
 (extracted from `aclImdb_v1.tar.gz`)
 
-**Output**: `data/IMDB Movies/imdb_labeled_clean.csv`
-(49,874 rows: `text_raw`, `text_clean`, `label`, `split`, `rating`)
+**Output**:
+- `data/IMDB Movies/imdb_labeled_clean.csv`
+  (49,877 rows: `text_raw`, `text_clean`, `label`, `split`, `rating`)
+- `data/IMDB Movies/imdb_train.csv` (24,877 rows) and
+  `data/IMDB Movies/imdb_test.csv` (25,000 rows) — Python-ready train/test
+  splits derived from the file above (`text_raw`, `text_clean`, `label` as
+  numeric 0/1, `rating`; no `split` column).
 
 ### What it does
 
@@ -18,10 +23,16 @@ CIND860 SHAP project.
 2. Reads raw review text and cleans it: strips `<br />`/HTML tags, lowercases,
    removes punctuation except apostrophes, collapses whitespace.
 3. Removes exact cross-split duplicate reviews (drops the train-side copy).
-4. Removes near-duplicate cross-split reviews — reviews that open with the
-   same 8 words and have 3-gram shingle Jaccard similarity > 0.5 — again
-   dropping the train-side copy.
-5. Writes the final deduplicated set to CSV.
+4. Writes the final deduplicated set to `imdb_labeled_clean.csv`.
+5. Exports the `imdb_train.csv`/`imdb_test.csv` split CSVs for the modeling
+   stage.
+
+Note: this script performs exact cross-split duplicate removal only. It does
+**not** perform near-duplicate removal (8-word-opening blocking + 3-gram
+shingle Jaccard similarity > 0.5), which an earlier, uncommitted pipeline had
+also applied (see project `AGENTS.md` for the historical 49,874/24,874-row
+figures that resulted from that stricter dedup, no longer the accepted
+counts).
 
 ### When to re-run it
 
@@ -48,16 +59,15 @@ Rscript scripts/build_imdb_csv.R
 ```
 
 Requires the `tidyverse` and `fs` packages. Takes roughly one minute to run
-(reads and cleans 50,000 review files, then does pairwise near-duplicate
-comparison within blocked groups).
+(reads and cleans 50,000 review files).
 
 ### Verification
 
-Verified 2026-10-16: running the script standalone (fresh `Rscript` process,
-no inherited session state) reproduces the existing
-`imdb_labeled_clean.csv` byte-for-byte in content (49,874 rows; 123 exact
-train-side duplicates dropped; 4 near-duplicate candidate pairs found, max
-similarity 0.798, 3 unique train-side rows dropped). Row order can differ
-between runs because `fs::dir_ls()` relies on filesystem directory-listing
-order, which is not guaranteed to be stable — this has no effect on content,
-row count, or class balance.
+Verified 2026-10-19: running the script standalone (fresh `Rscript` process,
+no inherited session state, output redirected to a scratch directory)
+reproduces the existing on-disk CSVs byte-for-byte in content: 49,877 rows
+for `imdb_labeled_clean.csv` (123 exact train-side duplicates dropped),
+24,877 rows for `imdb_train.csv`, 25,000 rows for `imdb_test.csv`. Row order
+can differ between runs because `fs::dir_ls()` relies on filesystem
+directory-listing order, which is not guaranteed to be stable — this has no
+effect on content, row count, or class balance.

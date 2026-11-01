@@ -1,0 +1,288 @@
+---
+title: ""
+jupyter: cind860
+execute:
+  echo: false
+bibliography: references.bib
+csl: apa.csl
+link-citations: true
+format:
+  pdf:
+    documentclass: article
+    pdf-engine: xelatex
+    mainfont: "Times New Roman"
+    fontsize: 12pt
+    linestretch: 2
+    geometry:
+      - margin=1in
+    include-in-header:
+      text: |
+        \usepackage{setspace}
+        \usepackage{indentfirst}
+---
+
+```{=latex}
+\begin{titlepage}
+\begin{center}
+\vspace*{2in}
+
+{\large Sentiment Classification Interpretability on IMDb Movie Reviews\\
+Applying Shapley Additive Explanations (SHAP)}
+
+\vspace{1in}
+
+Eileen Murphy \\
+Student Number: 501113406
+
+\vspace{1in}
+
+Supervisor: Ashok Bhowmick, Ph.D
+
+\vspace{1in}
+
+Date of Submission: October 30, 2026
+
+\end{center}
+\end{titlepage}
+```
+
+```{=latex}
+\begin{center}
+\textbf{Abstract}
+\end{center}
+```
+
+**Sentiment Classification Interpretability on IMDb Movie Reviews Applying Shapley Additive Explanations (SHAP)**
+
+In this paper, we propose using the IMDb Movie Reviews dataset to conduct sentiment analysis and apply SHAP to understand the words or phrases that contribute to its score. Taking the sentiment analysis out of the "black box" to having transparent scores gives users the ability to validate and correct while improving the model over time. In this way, the model will become an asset rather than a potential unknown liability. The problem with artificial intelligence is not the effectiveness, but the trust of people using it. Models are not perfect and sometimes models will fail in just one reading, but that could be the only reading people see and dismiss the model entirely, as a result.
+
+Using @krishnakumar2020towards as a theme, research on arrhythmias with different diagnosed classifications provides an insightful look on how different patterns in the range of their measurements can not only enhance their diagnosis but also make it transparent on which measurements were the most indicative of their condition. Another important aspect is the "bellwether" methodology to filter high quality instances to train the model to improve its performance scores.
+
+**Proposed Approach**
+
+This research will train four classification models using Python SKLearn and/or KERAS:
+
+1. Logistic Regression (TF-IDF)
+2. Naive Bayes (TF-IDF)
+3. Random Forest (TF-IDF)
+4. LSTM (RNN) with Word Embeddings
+5. DistilBERT Transformer (? Maybe)
+
+SHAP values will be computed using Python SHAP packages on the models and compared to each other. Different plots will be generated to clarify how tokens affect the predictions.
+
+"Bellwether" instances will be identified from partitioning the data (ie SHAP scores, movie genre, or other possibilities). Once the dataset is partitioned then we will run tests to see if a bellwether partition exists.  If there is a valid bellwether partition, then the model will be retrained on the bellwether subset. Finally, evaluation metrics will be calculated to assess model performance.
+
+**Research Questions**
+
+RQ1: How do SHAP explanations differ across traditional ML, deep learning, and transformer models for sentiment classification?
+
+RQ2: Does SHAP-based "bellwether" instance selection improve model performance? 
+
+RQ3: How reliable and consistent are SHAP explanations by human annotators?
+
+RQ4: Which sentiment-driving words are consensus across models, and which are model-specific?
+
+
+**Introduction**
+
+The IMDB dataset has been used as a benchmark dataset for NLP sentiment analysis since 2011, and papers have been published by raising the accuracy of the previous study. As of this writing, it has reached 95-97% accuracy by 2019 [@ruder2019nlpprogress]. A link to the leaderboard of these scores and its respective authors' papers are a treasure trove of the historical evolving methods of achieving the highest accuracy as possible and the path getting us there.
+
+Approaches used on NLP sentiment analysis used in studies reveal that attaining the highest accuracy is not linear and there are some tradeoffs between accuracy, robustness and computational cost. Testing and measuring the robustness of the model, in some cases tweaking the dataset to see how the model responds was not possible for "black box" models since their scoring was not transparent.  Meanwhile in 2017, a paper was published establishing a framework called SHAP(SHapley Additive exPlanations) [@lundberg2018shap]. By 2018, Python came out with the first version of the SHAP framework package. Being able to access the SHAP framework using Python made it possible for the higher performing "black box" models to be studied for their robustness in addition to their accuracy. Measuring robustness is not standardized, but using various techniques of comparison has shown that the new models are not just more accurate but more robust but only at the cost of increased computational processing. So now the challenge is finding the balance between accuracy, robustness, and computational processing. 
+
+
+**Dataset**
+
+The IMDb Movies dataset will be used in this paper since it has been a reliable source for benchmarking for sentiment classification since 2011 and our results can be directly compared to other studies that still use it today. 
+
+According to its documentation [@maas2011learning], the database contains 50K records split evenly between 25K for training and 25K for testing. 
+
+Each record includes the raw text of the review, rating (1-10), sentiment (pos or neg). The sentiment is derived from the ratings. Ratings <= 4 are labeled negative, and ratings >= 7 are rated positive. There are no neutral ratings (5-6) included in the training or test datasets.
+
+In the IMDB dataset there is another 50K records that include all the ratings (1-10). It does not include the derived sentiment from the ratings used in the labelled test and training sets. The purpose of including this dataset is for unsupervised learning. Although, we may use this dataset for our own purposes in this study. 
+
+[IMDb Movies Database Source](https://ai.stanford.edu/~amaas/data/sentiment/) [@maas2011learning]
+
+
+**Related Work**
+
+In the "Bellwethers: A Baseline Method For Transfer Learning" paper, published on January 2018 [@krishna2018bellwethersbaselinemethodtransfer] is a detailed and rigorous paper of establishing a bellwether subset of data and using transfer learning on the other partitioned subsets of data. This paper was written to solve the problem of software analytics prediction models coming to different conclusions as the number of projects increased. The author's study includes a rigorous identification of a bellwether subset, and making sure that the bellwether is tested periodically to make sure that it's still valid 
+
+The author points out that finding a bellwether subset of data is more effective in a performance boost than by using more complex models on the whole dataset.
+
+One  useful metric that can be used in this paper is the confusion square metric that calculates the result in a single value. The formula is as follows:
+
+The paper defines G-Score as:
+
+$$
+G = \frac{2 \times P_d \times (1 - P_f)}{1 + P_d - P_f}
+$$
+
+Where:
+
+- $P_d$ = Probability of Detection = $\dfrac{TP}{TP + FN}$ (Recall / True Positive Rate)
+- $P_f$ = Probability of False Alarm = $\dfrac{FP}{FP + TN}$ (False Positive Rate) 
+[@krishna2018bellwethersbaselinemethodtransfer]
+
+
+"Explainable Sentiment Analysis: A Comparative Study of BERT, DistilBERT, and TF–IDF on the IMDB Dataset Using LIME and SHAP" [@khan2026explainable] compares traditional machine learning models and transformer based models using their accuracy scores. In addition, the models use LIME and SHAP model agnostic explanation frameworks to find token level importance, explainability, and robustness. 
+
+To test robustness, it took out the top important tokens and noted the accuracy difference. Some models like SVM were dependent on some words for their accuracy scores while BERT maintained its accuracy even with 10% of the most important terms were dropped. The paper was concerned by not just performance scores but by whether the model was based on keyword tokens for their scores or if the model had a deeper understanding of the token taken in context. In its conclusion, DistilBERT model provided the best tradeoff between computation overhead, robustness, and accuracy scores.
+
+A comparative study of using different machine learning and ensemble methods titled, "Binary Sentiment Classification on the IMDB Movie Review Dataset Using An Ensemble (Random Forest, Logistic Regression, and Xgboost) Approach." [@Dongre2025BinarySC] In this paper the authors compared using Logistic Regression, Random Forest, XGBoost, and Ensemble with detailed pre-processing and analysis for accuracy and F1 results and produced a confusion square for each test. The authors concluded that the Ensemble (Soft Voting) had the highest accuracy but only slightly above the Logistic Regression model, but was more stable.
+
+The value of the "Advanced Sentiment Analysis of IMDB Movie Reviews Using NLP Preprocessing, TF-IDF and Classical Machine Learning Models" [@limbola2026advanced] is its detail on pre-processing and EDA analysis of the IMDB dataset and the description of the inner workings each machine model being examined. The authors compared Machine Learning models (Logistic Regression, SVM, Naive Bayes, Random Forest) with deep learning models (LSTM and BiLSTM). The test results showed that the Logistic Regression model is still a competitive model in its effectiveness, interpretation, and computational efficiency to be used as a baseline despite the advances in deep learning models.
+
+"Sentiment Analysis on IMDB Reviews: A Comparative Study of Bag-of-Words, Deep Learning, and Transformer Models," [@shetty2026sentiment] is another comparison study but includes transformer architecture and compares Bag of Words (BOW), TF-IDF, and deep learning GloVe embeddings and pre-trained transformers. The conclusion was that the transformer model (Longformer) surpassed the other models (BERT and DistilBERT), and there is high potential to improve them.
+
+**Methodology**
+
+```{mermaid}
+%%| fig-width: 6.5
+flowchart LR
+    A["Feature Engineering<br/>TF-IDF, n-grams, embeddings"] --> B["Train 5 Classification Models"]
+
+    B --> M1["Logistic Regression"]
+    B --> M2["Naive Bayes"]
+    B --> M3["Random Forest"]
+    B --> M4["LSTM"]
+    B --> M5["DistilBERT"]
+
+    M1 --> S1["KernelSHAP"]
+    M2 --> S1
+    M3 --> S2["TreeSHAP"]
+    M4 --> S3["GradientSHAP"]
+    M5 --> S4["DeepSHAP"]
+
+    S1 --> C["Compute SHAP Values"]
+    S2 --> C
+    S3 --> C
+    S4 --> C
+
+    C --> D["Identify 'Bellwether' Instances<br/>SHAP consistency metrics / partitions"]
+    D --> E["Retrain Models on Bellwether Subset"]
+    E --> F["Evaluate Improvements<br/>Accuracy, AUC, F1, Robustness"]
+    F --> G["Validate SHAP Explanations<br/>via Human Annotation"]
+    G --> H["Analyze Consensus &amp; Divergence<br/>Across Models"]
+
+    classDef feature fill:#cfe8ff,stroke:#1b6ec2,color:#000;
+    classDef train fill:#d8f0d8,stroke:#2e7d32,color:#000;
+    classDef explain fill:#fff3cd,stroke:#b08900,color:#000;
+    classDef process fill:#f0e0ff,stroke:#7b2cbf,color:#000;
+
+    class A feature;
+    class B,M1,M2,M3,M4,M5 train;
+    class S1,S2,S3,S4,C explain;
+    class D,E,F,G,H process;
+```
+
+
+
+
+```{python}
+import time
+
+import numpy as np
+import pandas as pd
+import shap
+import matplotlib.pyplot as plt
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import StratifiedKFold, cross_validate
+
+
+```
+
+
+
+**Cleaned Data downloaded 25k training / 25k testing**
+
+```{python}
+
+import time
+
+DATA_DIR = "data/IMDB Movies"
+
+train = pd.read_csv(f"{DATA_DIR}/imdb_train.csv")
+test = pd.read_csv(f"{DATA_DIR}/imdb_test.csv")
+
+texts = train["text_clean"]
+y = train["label"]  # numeric: 0 = neg, 1 = pos
+
+print("train shape: ",train.shape, "test shape: ",test.shape)
+train[["text_clean", "label", "rating"]].head()
+# Reload fresh to be safe (train already in session, but let's confirm shape/columns)
+print("Train columns: ",train.columns.tolist())
+
+X_text = train["text_clean"]
+y = train["label"]
+
+```
+
+**Taking the 25k Training dataset and splitting it 80/20 **
+
+
+```{python}
+#split train 80/20 using sklearn
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_text, y, test_size=0.2, stratify=y, random_state=42
+)
+
+print("X_train:", X_train.shape, " X_test:", X_test.shape)
+print("y_train:", y_train.shape, " y_test:", y_test.shape)
+print("train class balance:\n", y_train.value_counts(normalize=True))
+print("test class balance:\n", y_test.value_counts(normalize=True))
+
+```
+
+
+**Rating distribution**
+
+The distribution of the ratings is U shaped, while the sentiment (pos/neg) is evenly distributed
+
+
+```{python}
+import numpy as np
+
+ratings_train = train.loc[X_train.index, "rating"]
+ratings_test = train.loc[X_test.index, "rating"]
+
+bins = range(1, 12)
+x = range(1, 11)
+width = 0.4
+
+train_counts, _ = np.histogram(ratings_train, bins=bins)
+test_counts, _ = np.histogram(ratings_test, bins=bins)
+
+train_prop = train_counts / train_counts.sum()
+test_prop = test_counts / test_counts.sum()
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+ax.bar([i - width/2 for i in x], train_prop, width, label="X_train", color="#1b9e77")
+ax.bar([i + width/2 for i in x], test_prop, width, label="X_test", color="#d95f02")
+
+ax.set_xticks(x)
+ax.set_xlabel("Star rating")
+ax.set_ylabel("Proportion")
+ax.set_title("Rating distribution (normalized): X_train vs X_test")
+ax.legend()
+fig.tight_layout()
+plt.show()
+```
+
+The proportions line up closely across every rating value, confirming the stratified split preserved the original U-shaped rating distribution (ratings of 1 and 10 dominate, with no 5-6 ratings present).
+
+
+
+```{=latex}
+\begin{center}
+\textbf{References}
+\end{center}
+```
+
+::: {#refs}
+:::

@@ -5,6 +5,8 @@
 #
 # Input : data/IMDB Movies/aclImdb/{train,test}/{pos,neg}/*.txt
 # Output: data/IMDB Movies/imdb_labeled_clean.csv
+#         data/IMDB Movies/imdb_train.csv
+#         data/IMDB Movies/imdb_test.csv
 #
 # Pipeline:
 #   1. Build file metadata (split/label/id/rating) for all labeled reviews.
@@ -12,6 +14,9 @@
 #      except apostrophes, collapse whitespace).
 #   3. Remove exact cross-split duplicate reviews (drop the train-side copy).
 #   4. Write text_raw, text_clean, label, split, rating to CSV.
+#   5. Export Python-ready train/test split CSVs (text_raw, text_clean,
+#      label as numeric 0/1, rating; no split column since it's implicit
+#      in the filename) for the modeling stage.
 #
 # NOTE: this script only removes exact cross-split duplicates. It does not
 # perform near-duplicate removal (8-word-opening blocking + 3-gram shingle
@@ -29,6 +34,8 @@ library(fs)
 
 data_dir <- "data/IMDB Movies/aclImdb"
 output_csv <- "data/IMDB Movies/imdb_labeled_clean.csv"
+train_csv <- "data/IMDB Movies/imdb_train.csv"
+test_csv  <- "data/IMDB Movies/imdb_test.csv"
 
 # --- 1. Build file metadata for labeled reviews (train/test x pos/neg) -----
 list_review_files <- function(split, label) {
@@ -70,28 +77,16 @@ labeled <- meta |>
     n_words    = str_count(text_clean, "\\S+")
   )
 
-# --- 3. Remove exact cross-split duplicates (drop train-side copy) ---------
-dup_text <- labeled |>
-  count(text_raw, name = "n_copies") |>
-  filter(n_copies > 1) |>
-  pull(text_raw)
+# --- 5. Write Python-ready train/test split CSVs ----------------------------
+imdb_export <- labeled |>
+  mutate(label_num = if_else(label == "pos", 1L, 0L)) |>
+  select(text_raw, text_clean, label = label_num, rating, split)
 
-exact_dupe_rows <- labeled |>
-  filter(text_raw %in% dup_text) |>
-  group_by(text_raw) |>
-  filter(n() > 1, n_distinct(split) > 1) |>
-  ungroup()
+train_df <- imdb_export |> filter(split == "train") |> select(-split)
+test_df  <- imdb_export |> filter(split == "test")  |> select(-split)
 
-to_drop_exact <- exact_dupe_rows |> filter(split == "train")
+write_csv(train_df, train_csv)
+write_csv(test_df,  test_csv)
 
-labeled <- labeled |> anti_join(to_drop_exact, by = c("path"))
-
-message("After exact-duplicate removal: ", nrow(labeled), " rows (",
-        nrow(to_drop_exact), " train-side exact dupes dropped)")
-
-# --- 4. Write the cleaned, deduplicated CSV --------------------------------
-labeled |>
-  select(text_raw, text_clean, label, split, rating) |>
-  write_csv(output_csv)
-
-message("Wrote ", nrow(labeled), " rows to ", output_csv)
+message("Wrote ", nrow(train_df), " rows to ", train_csv)
+message("Wrote ", nrow(test_df),  " rows to ", test_csv)
