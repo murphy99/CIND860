@@ -78,9 +78,7 @@ RQ1: How do SHAP explanations differ across traditional ML, deep learning, and t
 
 RQ2: Does SHAP-based "bellwether" instance selection improve model performance? 
 
-RQ3: How reliable and consistent are SHAP explanations by human annotators?
-
-RQ4: Which sentiment-driving words are consensus across models, and which are model-specific?
+RQ3: Which sentiment-driving words are consensus across models, and which are model-specific?
 
 
 **Introduction**
@@ -160,9 +158,6 @@ flowchart LR
 
     C --> D["Identify 'Bellwether' Instances<br/>SHAP consistency metrics / partitions"]
     D --> E["Retrain Models on Bellwether Subset"]
-    E --> F["Evaluate Improvements<br/>Accuracy, AUC, F1, Robustness"]
-    F --> G["Validate SHAP Explanations<br/>via Human Annotation"]
-    G --> H["Analyze Consensus &amp; Divergence<br/>Across Models"]
 
     classDef feature fill:#cfe8ff,stroke:#1b6ec2,color:#000;
     classDef train fill:#d8f0d8,stroke:#2e7d32,color:#000;
@@ -172,7 +167,7 @@ flowchart LR
     class A feature;
     class B,M1,M2,M3,M4,M5 train;
     class S1,S2,S3,S4,C explain;
-    class D,E,F,G,H process;
+    class D,E process;
 ```
 
 

@@ -10,8 +10,8 @@ CIND860 SHAP project.
 
 **Output**:
 - `data/IMDB Movies/imdb_labeled_clean.csv`
-  (49,877 rows: `text_raw`, `text_clean`, `label`, `split`, `rating`)
-- `data/IMDB Movies/imdb_train.csv` (24,877 rows) and
+  (50,000 rows: `text_raw`, `text_clean`, `label`, `split`, `rating`)
+- `data/IMDB Movies/imdb_train.csv` (25,000 rows) and
   `data/IMDB Movies/imdb_test.csv` (25,000 rows) — Python-ready train/test
   splits derived from the file above (`text_raw`, `text_clean`, `label` as
   numeric 0/1, `rating`; no `split` column).
@@ -22,17 +22,10 @@ CIND860 SHAP project.
    reviews (`unsup` reviews are excluded).
 2. Reads raw review text and cleans it: strips `<br />`/HTML tags, lowercases,
    removes punctuation except apostrophes, collapses whitespace.
-3. Removes exact cross-split duplicate reviews (drops the train-side copy).
-4. Writes the final deduplicated set to `imdb_labeled_clean.csv`.
+4. Writes the final pre-processed into  `imdb_labeled_clean.csv`.
 5. Exports the `imdb_train.csv`/`imdb_test.csv` split CSVs for the modeling
    stage.
 
-Note: this script performs exact cross-split duplicate removal only. It does
-**not** perform near-duplicate removal (8-word-opening blocking + 3-gram
-shingle Jaccard similarity > 0.5), which an earlier, uncommitted pipeline had
-also applied (see project `AGENTS.md` for the historical 49,874/24,874-row
-figures that resulted from that stricter dedup, no longer the accepted
-counts).
 
 ### When to re-run it
 
@@ -41,7 +34,7 @@ counts).
 - Re-run it only if:
   - the raw `aclImdb` data changes or is re-extracted from the archive, or
   - the CSV is lost/corrupted and needs to be regenerated from source, or
-  - you intentionally want to change the cleaning or dedup logic (edit the
+  - you intentionally want to change the cleaning logic (edit the
     script, then re-run to regenerate the CSV).
 
 ### How to run it
