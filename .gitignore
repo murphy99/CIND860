@@ -1,0 +1,6 @@
+Project_SHAP.qmd
+data/*
+shap_cache/
+scripts/cv_model_comparison.py
+
+
