@@ -5004,7 +5004,7 @@ G = \frac{2 \times P_d \times (1 - P_f)}{1 + P_d - P_f}
 </div>
 </div>
 </div>
-<div id="d86651b9" class="cell" data-execution_count="1">
+<div id="27c68d40" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -5021,7 +5021,7 @@ G = \frac{2 \times P_d \times (1 - P_f)}{1 + P_d - P_f}
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> StratifiedKFold, cross_validate</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="47625334" class="cell" data-execution_count="2">
+<div id="e6e7a909" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
@@ -5050,7 +5050,7 @@ Train columns:  [&#39;text_raw&#39;, &#39;text_clean&#39;, &#39;label&#39;, &#39
 </section>
 <section id="taking-the-25k-training-dataset-and-splitting-it-8020" class="level2">
 <h2 class="anchored" data-anchor-id="taking-the-25k-training-dataset-and-splitting-it-8020">Taking the 25k Training dataset and splitting it 80/20</h2>
-<div id="371b7789" class="cell" data-execution_count="3">
+<div id="f50c3534" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#split train 80/20 using sklearn</span></span>
@@ -5084,7 +5084,7 @@ Name: proportion, dtype: float64</code></pre>
 <section id="rating-distribution" class="level2">
 <h2 class="anchored" data-anchor-id="rating-distribution">Rating distribution</h2>
 <p>The distribution of the ratings is U shaped, while the sentiment (pos/neg) is evenly distributed</p>
-<div id="caddda81" class="cell" data-execution_count="4">
+<div id="2026091d" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -5170,7 +5170,7 @@ Figure 1
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="wordcount-by-label-stats" class="cell-output cell-output-display" data-execution_count="6">
+<div id="wordcount-by-label-stats" class="cell-output cell-output-display" data-execution_count="31">
 <div>
 
 
@@ -5226,7 +5226,7 @@ Figure 1
 <span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    .reset_index()</span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div id="wordcount-by-split-stats" class="cell-output cell-output-display" data-execution_count="7">
+<div id="wordcount-by-split-stats" class="cell-output cell-output-display" data-execution_count="32">
 <div>
 
 
@@ -5300,7 +5300,7 @@ Figure 2
 <h2 class="anchored" data-anchor-id="feature-extraction">Feature Extraction</h2>
 <section id="unigrams-using-countvectorizer" class="level3">
 <h3 class="anchored" data-anchor-id="unigrams-using-countvectorizer">Unigrams using CountVectorizer</h3>
-<div id="04a15401" class="cell" data-execution_count="9">
+<div id="8e5e89cd" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
@@ -5374,7 +5374,7 @@ Avg non-zero terms per document: 89.4
 </section>
 <section id="unigrams-using-tf-idf" class="level3">
 <h3 class="anchored" data-anchor-id="unigrams-using-tf-idf">Unigrams using TF-IDF</h3>
-<div id="0e806278" class="cell" data-execution_count="10">
+<div id="9fa821be" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
@@ -5442,7 +5442,7 @@ Avg non-zero terms per document: 89.4
 </section>
 <section id="bigrams-using-tf-idf" class="level3">
 <h3 class="anchored" data-anchor-id="bigrams-using-tf-idf">BiGrams using TF-IDF</h3>
-<div id="caf0c81c" class="cell" data-execution_count="11">
+<div id="1fd0135b" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> TfidfVectorizer</span>
@@ -5514,7 +5514,7 @@ Avg non-zero terms per document: 45.3
 <section id="cross-validation-on-x_train" class="level2">
 <h2 class="anchored" data-anchor-id="cross-validation-on-x_train">Cross-Validation on X_train</h2>
 <p>Cross-validation is run on <code>X_train</code>/<code>y_train</code> only (not the full 25k or <code>X_test</code>), so that <code>X_test</code> remains an untouched development hold-out and <code>imdb_test.csv</code> remains available later as the final blind test set. Settings (TF-IDF <code>max_features=10000</code>, <code>min_df=2</code>, <code>max_df=0.95</code>; 5-fold <code>StratifiedKFold</code>) match the project’s existing baseline (<code>scripts/cv_model_comparison.py</code>) for comparability.</p>
-<div id="0558f197" class="cell" data-execution_count="12">
+<div id="4f4ee940" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cv <span class="op">=</span> StratifiedKFold(n_splits<span class="op">=</span><span class="dv">5</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -5523,7 +5523,7 @@ Avg non-zero terms per document: 45.3
 <section id="rating-distribution-across-cv-folds" class="level3">
 <h3 class="anchored" data-anchor-id="rating-distribution-across-cv-folds">Rating distribution across CV folds</h3>
 <p><code>StratifiedKFold</code> stratifies on the binary <code>label</code>, not on <code>rating</code> directly, so it’s worth checking that each fold’s validation split still preserves a similar U-shaped rating distribution to the overall <code>X_train</code> set.</p>
-<div id="1e67458d" class="cell" data-execution_count="13">
+<div id="ae30bfd0" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fold_rating_records <span class="op">=</span> []</span>
@@ -5561,7 +5561,7 @@ Avg non-zero terms per document: 45.3
 </section>
 <section id="initial-results" class="level2">
 <h2 class="anchored" data-anchor-id="initial-results">Initial Results</h2>
-<div id="efdba813" class="cell" data-execution_count="14">
+<div id="a06617eb" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
@@ -5668,17 +5668,17 @@ Avg non-zero terms per document: 45.3
 VECTORIZER: TF-IDF
 ======================================================================
 
-Logistic Regression  (elapsed 22.8s)
+Logistic Regression  (elapsed 20.6s)
   accuracy   test: 0.8859 (+/- 0.0026)   train: 0.9269
   f1         test: 0.8871 (+/- 0.0022)   train: 0.9274
   roc_auc    test: 0.9539 (+/- 0.0023)   train: 0.9791
 
-Naive Bayes  (elapsed 22.2s)
+Naive Bayes  (elapsed 33.5s)
   accuracy   test: 0.8562 (+/- 0.0048)   train: 0.8878
   f1         test: 0.8544 (+/- 0.0046)   train: 0.8864
   roc_auc    test: 0.9322 (+/- 0.0027)   train: 0.9565
 
-Random Forest  (elapsed 79.3s)
+Random Forest  (elapsed 110.7s)
   accuracy   test: 0.8411 (+/- 0.0043)   train: 0.9707
   f1         test: 0.8425 (+/- 0.0032)   train: 0.9710
   roc_auc    test: 0.9197 (+/- 0.0032)   train: 0.9964
@@ -5687,17 +5687,17 @@ Random Forest  (elapsed 79.3s)
 VECTORIZER: CountVectorizer
 ======================================================================
 
-Logistic Regression  (elapsed 22.1s)
+Logistic Regression  (elapsed 32.9s)
   accuracy   test: 0.8679 (+/- 0.0044)   train: 0.9975
   f1         test: 0.8686 (+/- 0.0044)   train: 0.9975
   roc_auc    test: 0.9364 (+/- 0.0019)   train: 1.0000
 
-Naive Bayes  (elapsed 19.9s)
+Naive Bayes  (elapsed 28.3s)
   accuracy   test: 0.8395 (+/- 0.0056)   train: 0.8668
   f1         test: 0.8356 (+/- 0.0055)   train: 0.8635
   roc_auc    test: 0.9114 (+/- 0.0031)   train: 0.9360
 
-Random Forest  (elapsed 70.2s)
+Random Forest  (elapsed 89.1s)
   accuracy   test: 0.8491 (+/- 0.0039)   train: 0.9523
   f1         test: 0.8521 (+/- 0.0029)   train: 0.9530
   roc_auc    test: 0.9259 (+/- 0.0036)   train: 0.9909
@@ -5706,17 +5706,17 @@ Random Forest  (elapsed 70.2s)
 VECTORIZER: bigram_vectorizer_tfidf
 ======================================================================
 
-Logistic Regression  (elapsed 25.8s)
+Logistic Regression  (elapsed 28.4s)
   accuracy   test: 0.8427 (+/- 0.0069)   train: 0.9837
   f1         test: 0.8475 (+/- 0.0061)   train: 0.9838
   roc_auc    test: 0.9200 (+/- 0.0041)   train: 0.9979
 
-Naive Bayes  (elapsed 21.8s)
+Naive Bayes  (elapsed 32.1s)
   accuracy   test: 0.8572 (+/- 0.0067)   train: 0.9892
   f1         test: 0.8544 (+/- 0.0066)   train: 0.9892
   roc_auc    test: 0.9347 (+/- 0.0042)   train: 0.9991
 
-Random Forest  (elapsed 42.6s)
+Random Forest  (elapsed 56.3s)
   accuracy   test: 0.7631 (+/- 0.0089)   train: 0.8020
   f1         test: 0.7884 (+/- 0.0060)   train: 0.8234
   roc_auc    test: 0.8610 (+/- 0.0072)   train: 0.9102
@@ -5740,10 +5740,10 @@ bigram_vectorizer_tfidf + Naive Bayes           0.85725  0.854368  0.934739
 bigram_vectorizer_tfidf + Random Forest         0.76310  0.788387  0.861016</code></pre>
 </div>
 </div>
-<div id="963c98d5" class="cell" data-execution_count="15">
+<div id="992e28f5" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Create summary and find best model</span></span>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create summary and find best model</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {}</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> cv_results.keys():</span>
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    test_results <span class="op">=</span> cv_results[name]</span>
@@ -5834,7 +5834,7 @@ CV F1:       0.8871 (+/- 0.0022)
 Table 1
 </figcaption>
 <div aria-describedby="tbl-cv-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="41">
 <div>
 
 
@@ -5943,10 +5943,10 @@ Table 1
 </div>
 <p>Table 1 (above) ranks all nine vectorizer/model combinations by cross-validated accuracy. TF-IDF + Logistic Regression achieved the highest cross-validated accuracy and F1 of all nine vectorizer/model combinations tested, consistent with the project’s earlier baseline findings: Logistic Regression’s linear decision boundary over sparse TF-IDF features suits this high-dimensional, near-linearly-separable bag-of-words text classification task well, while Naive Bayes’ independence assumption and Random Forest’s axis-aligned tree splits are comparatively less suited to sparse TF-IDF representations, and the bigram vectorizer under-performed unigram TF-IDF, likely due to increased feature sparsity without a compensating gain in discriminative signal.</p>
 <p>The bigram TF-IDF vectorizer underperformed unigram TF-IDF for every model except Naive Bayes (0.857 vs. 0.856 accuracy, essentially unchanged), with the largest drops for Random Forest (0.763 vs. 0.841 accuracy, a 7.8-point loss) and Logistic Regression (0.843 vs. 0.886 accuracy, a 4.3-point loss), suggesting that bigrams’ much sparser, higher-dimensional feature space dilutes the signal available per feature without a corresponding gain in discriminative information.</p>
-<div id="b1dbb846" class="cell" data-execution_count="17">
+<div id="a003a9b5" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Show code</summary>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Train best model on all training data</span></span>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Train best model on all training data</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>best_pipe <span class="op">=</span> Pipeline([</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;vectorizer&quot;</span>, best_vectorizer),</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;clf&quot;</span>, best_model),</span>
@@ -5958,7 +5958,7 @@ Table 1
 <span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>best_pipe.fit(X_train, y_train)<span class="op">;</span>  <span class="co"># trailing &#39;;&#39; suppresses the sklearn HTML-repr display output</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="16a86abc" class="cell" data-execution_count="18">
+<div id="a04c7278" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5: Evaluate on test set</span></span>
@@ -5981,7 +5981,7 @@ Final Test Set Evaluation:
   Recall:    0.8860</code></pre>
 </div>
 </div>
-<div id="ca92170c" class="cell" data-execution_count="19">
+<div id="35137c1f" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Show code</summary>
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 6: Confusion matrix for the final test-set predictions</span></span>
@@ -7458,7 +7458,7 @@ Shetty, A. M., Hegde K, R., Shabari, Kamath, S., &amp; Vidyavathi, K. (2026). Se
 <span id="cb39-660"><a href="#cb39-660" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb39-661"><a href="#cb39-661" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-664"><a href="#cb39-664" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb39-665"><a href="#cb39-665" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3: Create summary and find best model</span></span>
+<span id="cb39-665"><a href="#cb39-665" aria-hidden="true" tabindex="-1"></a><span class="co"># Create summary and find best model</span></span>
 <span id="cb39-666"><a href="#cb39-666" aria-hidden="true" tabindex="-1"></a>summary <span class="op">=</span> {}</span>
 <span id="cb39-667"><a href="#cb39-667" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name <span class="kw">in</span> cv_results.keys():</span>
 <span id="cb39-668"><a href="#cb39-668" aria-hidden="true" tabindex="-1"></a>    test_results <span class="op">=</span> cv_results[name]</span>
@@ -7515,7 +7515,7 @@ Shetty, A. M., Hegde K, R., Shabari, Kamath, S., &amp; Vidyavathi, K. (2026). Se
 <span id="cb39-721"><a href="#cb39-721" aria-hidden="true" tabindex="-1"></a>The bigram TF-IDF vectorizer underperformed unigram TF-IDF for every model except Naive Bayes (0.857 vs. 0.856 accuracy, essentially unchanged), with the largest drops for Random Forest (0.763 vs. 0.841 accuracy, a 7.8-point loss) and Logistic Regression (0.843 vs. 0.886 accuracy, a 4.3-point loss), suggesting that bigrams&#39; much sparser, higher-dimensional feature space dilutes the signal available per feature without a corresponding gain in discriminative information.</span>
 <span id="cb39-722"><a href="#cb39-722" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb39-725"><a href="#cb39-725" aria-hidden="true" tabindex="-1"></a><span class="in">```{python}</span></span>
-<span id="cb39-726"><a href="#cb39-726" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4: Train best model on all training data</span></span>
+<span id="cb39-726"><a href="#cb39-726" aria-hidden="true" tabindex="-1"></a><span class="co"># Train best model on all training data</span></span>
 <span id="cb39-727"><a href="#cb39-727" aria-hidden="true" tabindex="-1"></a>best_pipe <span class="op">=</span> Pipeline([</span>
 <span id="cb39-728"><a href="#cb39-728" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;vectorizer&quot;</span>, best_vectorizer),</span>
 <span id="cb39-729"><a href="#cb39-729" aria-hidden="true" tabindex="-1"></a>    (<span class="st">&quot;clf&quot;</span>, best_model),</span>

@@ -634,8 +634,7 @@ print(results_df.pivot_table(index='model', columns='metric', values='test_mean'
 
 ```{python}
 
-
-# Step 3: Create summary and find best model
+# Create summary and find best model
 summary = {}
 for name in cv_results.keys():
     test_results = cv_results[name]
@@ -693,7 +692,7 @@ The bigram TF-IDF vectorizer underperformed unigram TF-IDF for every model excep
 
 ```{python}
 
-# Step 4: Train best model on all training data
+# Train best model on all training data
 best_pipe = Pipeline([
     ("vectorizer", best_vectorizer),
     ("clf", best_model),
