@@ -15,10 +15,21 @@ format:
     linestretch: 2
     geometry:
       - margin=1in
+    fig-pos: "H"
     include-in-header:
       text: |
         \usepackage{setspace}
         \usepackage{indentfirst}
+        \usepackage{float}
+  html:
+    title: "Sentiment Classification Interpretability on IMDb Movie Reviews Applying Shapley Additive Explanations (SHAP)"
+    toc: true
+    code-fold: true
+    code-tools: true
+    code-summary: "Show code"
+    embed-resources: true
+    execute:
+      echo: true
 ---
 
 ```{=latex}
@@ -52,13 +63,11 @@ Date of Submission: October 30, 2026
 \end{center}
 ```
 
-**Sentiment Classification Interpretability on IMDb Movie Reviews Applying Shapley Additive Explanations (SHAP)**
-
 In this paper, we propose using the IMDb Movie Reviews dataset to conduct sentiment analysis and apply SHAP to understand the words or phrases that contribute to its score. Taking the sentiment analysis out of the "black box" to having transparent scores gives users the ability to validate and correct while improving the model over time. In this way, the model will become an asset rather than a potential unknown liability. The problem with artificial intelligence is not the effectiveness, but the trust of people using it. Models are not perfect and sometimes models will fail in just one reading, but that could be the only reading people see and dismiss the model entirely, as a result.
 
 Using @krishnakumar2020towards as a theme, research on arrhythmias with different diagnosed classifications provides an insightful look on how different patterns in the range of their measurements can not only enhance their diagnosis but also make it transparent on which measurements were the most indicative of their condition. Another important aspect is the "bellwether" methodology to filter high quality instances to train the model to improve its performance scores.
 
-**Proposed Approach**
+## Proposed Approach
 
 This research will train four classification models using Python SKLearn and/or KERAS:
 
@@ -72,7 +81,7 @@ SHAP values will be computed using Python SHAP packages on the models and compar
 
 "Bellwether" instances will be identified from partitioning the data (ie SHAP scores, movie genre, or other possibilities). Once the dataset is partitioned then we will run tests to see if a bellwether partition exists.  If there is a valid bellwether partition, then the model will be retrained on the bellwether subset. Finally, evaluation metrics will be calculated to assess model performance.
 
-**Research Questions**
+## Research Questions
 
 RQ1: How do SHAP explanations differ across traditional ML, deep learning, and transformer models for sentiment classification?
 
@@ -81,14 +90,14 @@ RQ2: Does SHAP-based "bellwether" instance selection improve model performance?
 RQ3: Which sentiment-driving words are consensus across models, and which are model-specific?
 
 
-**Introduction**
+## Introduction
 
 The IMDB dataset has been used as a benchmark dataset for NLP sentiment analysis since 2011, and papers have been published by raising the accuracy of the previous study. As of this writing, it has reached 95-97% accuracy by 2019 [@ruder2019nlpprogress]. A link to the leaderboard of these scores and its respective authors' papers are a treasure trove of the historical evolving methods of achieving the highest accuracy as possible and the path getting us there.
 
 Approaches used on NLP sentiment analysis used in studies reveal that attaining the highest accuracy is not linear and there are some tradeoffs between accuracy, robustness and computational cost. Testing and measuring the robustness of the model, in some cases tweaking the dataset to see how the model responds was not possible for "black box" models since their scoring was not transparent.  Meanwhile in 2017, a paper was published establishing a framework called SHAP(SHapley Additive exPlanations) [@lundberg2018shap]. By 2018, Python came out with the first version of the SHAP framework package. Being able to access the SHAP framework using Python made it possible for the higher performing "black box" models to be studied for their robustness in addition to their accuracy. Measuring robustness is not standardized, but using various techniques of comparison has shown that the new models are not just more accurate but more robust but only at the cost of increased computational processing. So now the challenge is finding the balance between accuracy, robustness, and computational processing. 
 
 
-**Dataset**
+## Dataset
 
 The IMDb Movies dataset will be used in this paper since it has been a reliable source for benchmarking for sentiment classification since 2011 and our results can be directly compared to other studies that still use it today. 
 
@@ -101,7 +110,7 @@ In the IMDB dataset there is another 50K records that include all the ratings (1
 [IMDb Movies Database Source](https://ai.stanford.edu/~amaas/data/sentiment/) [@maas2011learning]
 
 
-**Related Work**
+## Related Work
 
 In the "Bellwethers: A Baseline Method For Transfer Learning" paper, published on January 2018 [@krishna2018bellwethersbaselinemethodtransfer] is a detailed and rigorous paper of establishing a bellwether subset of data and using transfer learning on the other partitioned subsets of data. This paper was written to solve the problem of software analytics prediction models coming to different conclusions as the number of projects increased. The author's study includes a rigorous identification of a bellwether subset, and making sure that the bellwether is tested periodically to make sure that it's still valid 
 
@@ -132,7 +141,7 @@ The value of the "Advanced Sentiment Analysis of IMDB Movie Reviews Using NLP Pr
 
 "Sentiment Analysis on IMDB Reviews: A Comparative Study of Bag-of-Words, Deep Learning, and Transformer Models," [@shetty2026sentiment] is another comparison study but includes transformer architecture and compares Bag of Words (BOW), TF-IDF, and deep learning GloVe embeddings and pre-trained transformers. The conclusion was that the transformer model (Longformer) surpassed the other models (BERT and DistilBERT), and there is high potential to improve them.
 
-**Methodology**
+## Methodology
 
 ```{mermaid}
 %%| fig-width: 6.5
@@ -192,7 +201,7 @@ from sklearn.model_selection import StratifiedKFold, cross_validate
 
 
 
-**Cleaned Data downloaded 25k training / 25k testing**
+## Cleaned Data downloaded 25k training / 25k testing
 
 ```{python}
 
@@ -216,7 +225,7 @@ y = train["label"]
 
 ```
 
-**Taking the 25k Training dataset and splitting it 80/20 **
+## Taking the 25k Training dataset and splitting it 80/20
 
 
 ```{python}
@@ -235,7 +244,7 @@ print("test class balance:\n", y_test.value_counts(normalize=True))
 ```
 
 
-**Rating distribution**
+## Rating distribution
 
 The distribution of the ratings is U shaped, while the sentiment (pos/neg) is evenly distributed
 
@@ -271,9 +280,79 @@ plt.show()
 
 The proportions line up closely across every rating value, confirming the stratified split preserved the original U-shaped rating distribution (ratings of 1 and 10 dominate, with no 5-6 ratings present).
 
-**Feature Extraction**
+## Review length distribution by label
 
-***Unigrams using CountVectorizer***
+```{python}
+#| label: fig-wordcount-by-label-hist
+combined = pd.concat([train, test], ignore_index=True)
+combined["n_words"] = combined["text_clean"].str.split().str.len()
+
+neg_len = combined.loc[combined["label"] == 0, "n_words"]
+pos_len = combined.loc[combined["label"] == 1, "n_words"]
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+bins = np.linspace(0, combined["n_words"].quantile(0.99), 40)
+ax.hist(neg_len, bins=bins, alpha=0.6, label="neg", color="#d95f02")
+ax.hist(pos_len, bins=bins, alpha=0.6, label="pos", color="#1b9e77")
+ax.set_xlabel("Review length (words)")
+ax.set_ylabel("Count")
+ax.set_title("Review length distribution by label")
+ax.legend()
+fig.tight_layout()
+plt.show()
+```
+
+The two distributions overlap almost completely and are both strongly right-skewed, confirming that review length does not meaningfully distinguish positive from negative reviews on average.
+
+```{python}
+#| label: wordcount-by-label-stats
+(
+    combined
+    .groupby("label")["n_words"]
+    .agg(mean="mean", median="median", max="max", n="count")
+    .reset_index()
+)
+```
+
+## Review length distribution by split
+
+```{python}
+#| label: wordcount-by-split-stats
+combined2 = pd.concat(
+    [train.assign(split="train"), test.assign(split="test")], ignore_index=True
+)
+combined2["n_words"] = combined2["text_clean"].str.split().str.len()
+
+(
+    combined2
+    .groupby("split")["n_words"]
+    .agg(mean="mean", median="median", max="max", n="count")
+    .reset_index()
+)
+```
+
+```{python}
+#| label: fig-wordcount-by-split-hist
+train_len = combined2.loc[combined2["split"] == "train", "n_words"]
+test_len = combined2.loc[combined2["split"] == "test", "n_words"]
+
+fig, ax = plt.subplots(figsize=(8, 4.5))
+bins = np.arange(0, 1025, 25)
+ax.hist(train_len[train_len <= 1000], bins=bins, alpha=0.5, label="train", color="#1f77b4")
+ax.hist(test_len[test_len <= 1000], bins=bins, alpha=0.5, label="test", color="#ff7f0e")
+ax.set_xlabel("Word count (text_clean)")
+ax.set_ylabel("Number of reviews")
+ax.set_title("Review Length Distribution by Split")
+ax.legend(title="split")
+fig.tight_layout()
+plt.show()
+```
+
+Review length distributions are also very similar between the `train` and `test` splits, with closely matching means, medians, and overall shape. This indicates the train/test split does not introduce a length-based bias.
+
+## Feature Extraction
+
+### Unigrams using CountVectorizer
 
 ```{python}
 from sklearn.feature_extraction.text import CountVectorizer
@@ -320,7 +399,7 @@ print(top_terms)
 
 ```
 
-**Unigrams using TF-IDF**
+### Unigrams using TF-IDF
 
 ```{python}
 
@@ -361,7 +440,7 @@ top_terms_tfid = pd.DataFrame({"term": vocab_tfid, "freq_tfid": term_freq_tfid})
 print(top_terms_tfid)
 ```
 
-**BiGrams using TF-IDF**
+### BiGrams using TF-IDF
 
 ```{python}
 
@@ -374,7 +453,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 bigram_vectorizer_tfidf = TfidfVectorizer(
     analyzer='word',
-    ngram_range=(1, 3),
+    ngram_range=(2, 2),
     lowercase=True,
     stop_words='english',
     min_df=2, #check cross-validation consistency
@@ -400,12 +479,12 @@ print(f"Avg non-zero terms per document: {bi / n_rows:.1f}")
 term_freq_tfidf_2 = np.asarray(bigram_features_tfidf.sum(axis=0)).ravel()
 vocab_tfidf_2 = bigram_vectorizer_tfidf.get_feature_names_out()
 
-top_terms_tfidf = pd.DataFrame({"term": vocab_tfidf_2, "freq_tfidf_2": term_freq_tfidf_2}).sort_values("freq_tfidf_2", ascending=False).head(500).reset_index(drop=True)
+top_terms_tfidf = pd.DataFrame({"term": vocab_tfidf_2, "freq_tfidf_2": term_freq_tfidf_2}).sort_values("freq_tfidf_2", ascending=False).head(15).reset_index(drop=True)
 print(top_terms_tfidf)
 ```
 
 
-**Cross-Validation on X_train**
+## Cross-Validation on X_train
 
 Cross-validation is run on `X_train`/`y_train` only (not the full 25k or
 `X_test`), so that `X_test` remains an untouched development hold-out and
@@ -418,7 +497,7 @@ Settings (TF-IDF `max_features=10000`, `min_df=2`, `max_df=0.95`;
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
-**Rating distribution across CV folds**
+### Rating distribution across CV folds
 
 `StratifiedKFold` stratifies on the binary `label`, not on `rating`
 directly, so it's worth checking that each fold's validation split still
@@ -451,16 +530,17 @@ plt.show()
 ```
 
 
-
-
-
-
-**Initial Results**
-
-
+## Initial Results
 
 ```{python}
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import cross_validate
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.ensemble import RandomForestClassifier
+import time
+import pandas as pd
 
 scoring = {
     "accuracy": "accuracy",
@@ -479,34 +559,496 @@ models = {
         random_state=42),
 }
 
+
+
+# Define vectorizers
+vectorizers = {
+    "TF-IDF": TfidfVectorizer(max_features=10000, min_df=2, max_df=0.95),
+    "CountVectorizer": CountVectorizer(max_features=10000, min_df=2, max_df=0.95),
+    "bigram_vectorizer_tfidf": TfidfVectorizer(
+        analyzer='word',
+        ngram_range=(2, 2),
+        lowercase=True,
+        stop_words='english',
+        min_df=2, #check cross-validation consistency
+        max_df=0.95) 
+}
+
 cv_results = {}
 
-for name, model in models.items():
-    pipe = Pipeline([
-        ("tfidf", 
-        TfidfVectorizer(max_features=10000, 
-        min_df=2, 
-        max_df=0.95)),
-        ("clf", model),
-    ])
-    t0 = time.time()
-    results = cross_validate(
-        pipe, X_train, y_train,
-        cv=cv, scoring=scoring,
-        return_train_score=True, n_jobs=-1,
-    )
-    elapsed = time.time() - t0
-    cv_results[name] = results
+# Loop through vectorizers and models
+for vec_name, vectorizer in vectorizers.items():
+    print(f"\n{'='*70}")
+    print(f"VECTORIZER: {vec_name}")
+    print(f"{'='*70}")
+    
+    for model_name, model in models.items():
+        pipe = Pipeline([
+            ("vectorizer", vectorizer),
+            ("clf", model),
+        ])
+        
+        t0 = time.time()
+        results = cross_validate(
+            pipe, X_train, y_train,
+            cv=cv, scoring=scoring,
+            return_train_score=True, n_jobs=-1,
+        )
+        elapsed = time.time() - t0
+        
+        # Store results with vectorizer info
+        key = f"{vec_name} + {model_name}"
+        cv_results[key] = results
+        
+        print(f"\n{model_name}  (elapsed {elapsed:.1f}s)")
+        for metric in scoring:
+            test_scores = results[f"test_{metric}"]
+            train_scores = results[f"train_{metric}"]
+            print(f"  {metric:10s} test: {test_scores.mean():.4f} (+/- {test_scores.std():.4f})   "
+                  f"train: {train_scores.mean():.4f}")
 
-    print(f"\n{name}  (elapsed {elapsed:.1f}s)")
+# Save results to CSV
+print("\n" + "="*70)
+print("SAVING RESULTS...")
+print("="*70)
+
+results_summary = []
+for key, results in cv_results.items():
     for metric in scoring:
         test_scores = results[f"test_{metric}"]
         train_scores = results[f"train_{metric}"]
-        print(f"  {metric:10s} test: {test_scores.mean():.4f} (+/- {test_scores.std():.4f})   "
-              f"train: {train_scores.mean():.4f}")
+        results_summary.append({
+            'model': key,
+            'metric': metric,
+            'test_mean': test_scores.mean(),
+            'test_std': test_scores.std(),
+            'train_mean': train_scores.mean(),
+        })
+
+results_df = pd.DataFrame(results_summary)
+results_df.to_csv("cv_results_comparison.csv", index=False)
+print("✓ Results saved to: cv_results_comparison.csv")
+print("\nResults Summary:")
+print(results_df.pivot_table(index='model', columns='metric', values='test_mean'))
 ```
 
+```{python}
 
+
+# Step 3: Create summary and find best model
+summary = {}
+for name in cv_results.keys():
+    test_results = cv_results[name]
+    summary[name] = {
+        'accuracy': test_results['test_accuracy'].mean(),
+        'accuracy_std': test_results['test_accuracy'].std(),
+        'f1': test_results['test_f1'].mean(),
+        'f1_std': test_results['test_f1'].std(),
+    }
+
+summary_df = pd.DataFrame(summary).T
+print("\nCross-Validation Summary:")
+print(summary_df.round(4))
+
+# Choose best by F1 score
+best_model_name = summary_df['accuracy'].idxmax()
+
+# best_model_name is a combined "vectorizer + model" key (e.g. "TF-IDF + Logistic Regression"),
+# since cv_results is now keyed that way by the single CV cell above.
+best_vectorizer_name, best_model_label = best_model_name.split(" + ", 1)
+best_vectorizer = vectorizers[best_vectorizer_name]
+best_model = models[best_model_label]
+
+print(f"\n{'='*50}")
+print(f"Best Vectorizer + Model: {best_model_name}")
+print(f"  Vectorizer: {best_vectorizer_name}")
+print(f"  Model:      {best_model_label}")
+print(f"CV Accuracy: {summary_df.loc[best_model_name, 'accuracy']:.4f} "
+      f"(+/- {summary_df.loc[best_model_name, 'accuracy_std']:.4f})")
+print(f"CV F1:       {summary_df.loc[best_model_name, 'f1']:.4f} "
+      f"(+/- {summary_df.loc[best_model_name, 'f1_std']:.4f})")
+print(f"{'='*50}")
+```
+
+```{python}
+#| label: tbl-cv-summary
+cv_summary_table = (
+    summary_df
+    .reset_index(names="combo")
+    .assign(
+        vectorizer=lambda d: d["combo"].str.split(" + ", regex=False).str[0],
+        model=lambda d: d["combo"].str.split(" + ", regex=False).str[1],
+    )
+    .loc[:, ["vectorizer", "model", "accuracy", "accuracy_std", "f1", "f1_std"]]
+    .sort_values("accuracy", ascending=False)
+    .round(4)
+    .reset_index(drop=True)
+)
+cv_summary_table
+```
+
+Table 1 (above) ranks all nine vectorizer/model combinations by cross-validated accuracy. TF-IDF + Logistic Regression achieved the highest cross-validated accuracy and F1 of all nine vectorizer/model combinations tested, consistent with the project's earlier baseline findings: Logistic Regression's linear decision boundary over sparse TF-IDF features suits this high-dimensional, near-linearly-separable bag-of-words text classification task well, while Naive Bayes' independence assumption and Random Forest's axis-aligned tree splits are comparatively less suited to sparse TF-IDF representations, and the bigram vectorizer under-performed unigram TF-IDF, likely due to increased feature sparsity without a compensating gain in discriminative signal.
+
+The bigram TF-IDF vectorizer underperformed unigram TF-IDF for every model except Naive Bayes (0.857 vs. 0.856 accuracy, essentially unchanged), with the largest drops for Random Forest (0.763 vs. 0.841 accuracy, a 7.8-point loss) and Logistic Regression (0.843 vs. 0.886 accuracy, a 4.3-point loss), suggesting that bigrams' much sparser, higher-dimensional feature space dilutes the signal available per feature without a corresponding gain in discriminative information.
+
+```{python}
+
+# Step 4: Train best model on all training data
+best_pipe = Pipeline([
+    ("vectorizer", best_vectorizer),
+    ("clf", best_model),
+])
+
+
+#print("X_train: ", X_train.shape, X_train.iloc[5])
+#print("y_train: ", y_train.shape)
+best_pipe.fit(X_train, y_train);  # trailing ';' suppresses the sklearn HTML-repr display output
+
+```
+
+```{python}
+
+# Step 5: Evaluate on test set
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+y_pred = best_pipe.predict(X_test)
+
+print(f"\nFinal Test Set Evaluation:")
+print(f"  Accuracy:  {accuracy_score(y_test, y_pred):.4f}")
+print(f"  F1:        {f1_score(y_test, y_pred):.4f}")
+print(f"  Precision: {precision_score(y_test, y_pred):.4f}")
+print(f"  Recall:    {recall_score(y_test, y_pred):.4f}")
+```
+
+```{python}
+# Step 6: Confusion matrix for the final test-set predictions
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+
+cm = confusion_matrix(y_test, y_pred)
+print("Confusion matrix (rows = actual, cols = predicted):")
+print(f"                 Predicted neg   Predicted pos")
+print(f"  Actual neg     {cm[0, 0]:>13}   {cm[0, 1]:>13}")
+print(f"  Actual pos     {cm[1, 0]:>13}   {cm[1, 1]:>13}")
+
+disp = ConfusionMatrixDisplay(
+    confusion_matrix=cm, display_labels=["neg", "pos"]
+)
+disp.plot(cmap="Blues", colorbar=False)
+plt.title(f"Confusion Matrix — {best_model_name} (test set)")
+plt.show()
+```
+
+## SHAP Explanations (KernelSHAP) for the Best Model
+
+With `best_pipe` identified above (TF-IDF + Logistic Regression), we compute
+SHAP (SHapley Additive exPlanations) values using `shap.KernelExplainer`, a
+model-agnostic explainer that treats the pipeline as a black box via its
+`predict_proba` method.
+
+KernelSHAP's runtime scales with both the number of background samples and
+the number of instances explained, so two steps keep it tractable on a
+10,000-feature TF-IDF representation:
+
+1. **Background summarization**: rather than using the full 20,000-row
+   `X_train` as the background distribution (which made `shap.kmeans` alone
+   take ~14 minutes), we first randomly sample 300 training rows and then
+   summarize those into 50 k-means cluster centers. This cuts background
+   preparation to a few seconds with no meaningful loss in explanation
+   quality.
+2. **Explained sample size**: KernelSHAP is run on the first 50 reviews of
+   `X_test` (with `nsamples=200` coalition samples per instance), which
+   takes roughly a minute — enough to see clear, interpretable patterns
+   without the cost of explaining the full test set.
+
+SHAP values are cached to disk (one `.npz` file per model under
+`shap_cache/`) after the first computation. The cache key encodes the
+model name, explained sample size, and `nsamples`, so later sections (or
+re-renders) that need these same SHAP values can load them in under a
+second instead of re-running the KernelSHAP computation — and the cache
+is automatically invalidated (recomputed) if any of those settings change.
+
+```{python}
+#| label: shap-cache-helper
+import os
+import shap
+
+def compute_or_load_shap(
+    name, pipe, X_train, X_test,
+    method="kernel", n_explain=50, nsamples=200, cache_dir="shap_cache",
+):
+    """Compute (or load cached) SHAP values for a fitted pipeline.
+
+    `method="kernel"` uses model-agnostic KernelSHAP (appropriate for
+    Logistic Regression and Naive Bayes, per the project's methodology
+    diagram). `method="tree"` uses the exact, much faster TreeSHAP
+    (appropriate for tree ensembles like Random Forest), computed with
+    `feature_perturbation="interventional"` against the same background
+    sample used for KernelSHAP, so values stay on a comparable probability
+    scale and reference distribution across models.
+
+    Caches to `shap_cache/shap_values_<slug>_<method>.npz`, keyed on model
+    name, method, n_explain, and nsamples (for "kernel") so stale caches
+    (including ones from a previously-used method) are auto-invalidated.
+    """
+    vectorizer = pipe.named_steps["vectorizer"]
+    model = pipe.named_steps["clf"]
+    feature_names = vectorizer.get_feature_names_out()
+
+    slug = name.lower().replace(" ", "_").replace("+", "").replace("__", "_")
+    cache_path = os.path.join(cache_dir, f"shap_values_{slug}_{method}shap.npz")
+    cache_key = f"{name}|method={method}|n_explain={n_explain}|nsamples={nsamples}"
+
+    X_explain_text = X_test.iloc[:n_explain]
+    X_explain_vec = vectorizer.transform(X_explain_text).toarray()
+
+    if os.path.exists(cache_path):
+        cached = np.load(cache_path, allow_pickle=True)
+        if str(cached["cache_key"]) == cache_key:
+            print(f"[{name}] Loaded cached {method.upper()}SHAP values from {cache_path}.")
+            return {
+                "shap_values_pos": cached["shap_values_pos"],
+                "feature_names": cached["feature_names"],
+                "X_explain_vec": X_explain_vec,
+                "X_explain_text": X_explain_text,
+            }
+
+    # Shared background: sample 300 training rows, then summarize to 50 k-means centers
+    rng = np.random.RandomState(42)
+    X_train_vec_sample = vectorizer.transform(
+        X_train.iloc[rng.choice(len(X_train), size=300, replace=False)]
+    ).toarray()
+    background = shap.kmeans(X_train_vec_sample, 50)
+
+    if method == "tree":
+        explainer = shap.TreeExplainer(
+            model, data=background.data,
+            feature_perturbation="interventional", model_output="probability",
+        )
+        shap_values = explainer.shap_values(X_explain_vec)
+    else:
+        explainer = shap.KernelExplainer(model.predict_proba, background)
+        shap_values = explainer.shap_values(X_explain_vec, nsamples=nsamples, silent=True)
+
+    # SHAP values for the "pos" class (index 1)
+    shap_values_pos = shap_values[:, :, 1] if np.ndim(shap_values) == 3 else shap_values[1]
+
+    os.makedirs(cache_dir, exist_ok=True)
+    np.savez_compressed(
+        cache_path,
+        shap_values_pos=shap_values_pos,
+        feature_names=feature_names,
+        cache_key=cache_key,
+    )
+    print(f"[{name}] Computed {method.upper()}SHAP values and cached them to {cache_path}.")
+
+    return {
+        "shap_values_pos": shap_values_pos,
+        "feature_names": feature_names,
+        "X_explain_vec": X_explain_vec,
+        "X_explain_text": X_explain_text,
+    }
+```
+
+```{python}
+#| label: shap-kernel-setup
+n_explain = 50
+n_nsamples = 200
+
+shap_results = {}
+shap_results[best_model_name] = compute_or_load_shap(
+    best_model_name, best_pipe, X_train, X_test,
+    method="kernel", n_explain=n_explain, nsamples=n_nsamples,
+)
+
+# Keep the original flat variable names for the cells below (unchanged)
+shap_values_pos = shap_results[best_model_name]["shap_values_pos"]
+feature_names = shap_results[best_model_name]["feature_names"]
+X_explain_vec = shap_results[best_model_name]["X_explain_vec"]
+X_explain_text = shap_results[best_model_name]["X_explain_text"]
+shap_model = best_pipe.named_steps["clf"]
+
+print(f"SHAP values ready for {n_explain} test reviews "
+      f"({shap_values_pos.shape[1]} TF-IDF features).")
+```
+
+### Global token importance
+
+```{python}
+#| label: fig-shap-summary
+fig = plt.figure(figsize=(8, 6))
+shap.summary_plot(
+    shap_values_pos, X_explain_vec, feature_names=feature_names,
+    plot_type="bar", max_display=20, show=False,
+)
+plt.title(
+    f"KernelSHAP — mean |SHAP value| by token (top 20, n={n_explain} test reviews)\n"
+    f"{best_model_name}"
+)
+plt.tight_layout()
+plt.show()
+```
+
+The top tokens by mean absolute SHAP value are intuitively sentiment-bearing
+(e.g. "bad", "worst", "stupid", "boring" pushing toward negative; "great",
+"excellent", "love", "best", "amazing" pushing toward positive), confirming
+that the model is picking up genuine sentiment signal rather than spurious
+correlations.
+
+### Single-review explanation
+
+```{python}
+#| label: fig-shap-single-instance
+# Pick the test review (within the explained sample) that has strong
+# contributions in BOTH directions (toward "pos" and toward "neg") among
+# its present tokens, for the clearest illustration. Scoring by sheer
+# magnitude spread alone (e.g. np.std of |SHAP|) can select a review that
+# is dominated by a single strongly one-sided word (e.g. "bad"), producing
+# a plot with only one bar color and nothing to show for the other class.
+present_mask = X_explain_vec > 0
+scores = np.zeros(n_explain)
+for j in range(n_explain):
+    vals = shap_values_pos[j][present_mask[j]]
+    pos_vals = vals[vals > 0]
+    neg_vals = vals[vals < 0]
+    max_pos = pos_vals.max() if len(pos_vals) else 0.0
+    max_neg = -neg_vals.min() if len(neg_vals) else 0.0
+    # Reward reviews with a strong pull in *both* directions; a review with
+    # no positive (or no negative) contributor at all scores zero.
+    scores[j] = min(max_pos, max_neg)
+i = int(np.argmax(scores))
+
+instance_shap = shap_values_pos[i]
+instance_vec = X_explain_vec[i]
+present_idx = np.where(instance_vec > 0)[0]
+
+top_idx = present_idx[np.argsort(-np.abs(instance_shap[present_idx]))][:15]
+top_words = feature_names[top_idx]
+top_vals = instance_shap[top_idx]
+order = np.argsort(top_vals)
+
+fig, ax = plt.subplots(figsize=(7, 5))
+colors = ["#d62728" if v < 0 else "#2ca02c" for v in top_vals[order]]
+ax.barh(np.array(top_words)[order], top_vals[order], color=colors)
+ax.axvline(0, color="black", linewidth=0.8)
+ax.set_xlabel("SHAP value (impact on predicted probability of 'pos')")
+
+pred_label = "pos" if shap_model.predict(X_explain_vec[[i]])[0] == 1 else "neg"
+true_label = "pos" if y_test.iloc[i] == 1 else "neg"
+ax.set_title(
+    f"KernelSHAP — single review explanation ({best_model_name})\n"
+    f"predicted: {pred_label}, actual: {true_label}"
+)
+plt.tight_layout()
+plt.show()
+
+print(X_explain_text.iloc[i][:300])
+```
+
+This review is deliberately chosen (rather than picked by sheer magnitude
+of SHAP values alone, which can select a review dominated by a single
+one-sided word and show only one bar color) to have a clear, strong
+contributor pulling toward each class, so both green ("pos") and red
+("neg") bars are visible — illustrating at the individual-review level the
+same token-level, signed reasoning seen in aggregate above.
+
+## SHAP Explanations for Naive Bayes and Random Forest (Cross-Model Comparison)
+
+To compare SHAP explanations across model types (RQ1/RQ3), Naive Bayes and
+Random Forest are each refit on the **same TF-IDF vectorizer** used for the
+best Logistic Regression model above, rather than each model's own
+best-performing vectorizer from @tbl-cv-summary (bigram TF-IDF for Naive
+Bayes, CountVectorizer for Random Forest). Keeping the feature space
+identical across models is what makes token-level SHAP comparison
+meaningful — comparing SHAP values computed over different vectorizers
+would mean comparing different feature spaces (e.g. unigrams vs. bigrams),
+not a true cross-model comparison.
+
+```{python}
+#| label: shap-nb-rf-setup
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.ensemble import RandomForestClassifier
+
+# Fresh vectorizer instances with the same hyperparameters as the shared
+# "TF-IDF" config (rather than reusing the fitted `vectorizers["TF-IDF"]`
+# object directly, which would be refit in place by Pipeline.fit() and
+# could mutate state shared with best_pipe).
+nb_pipe = Pipeline([
+    ("vectorizer", TfidfVectorizer(max_features=10000, min_df=2, max_df=0.95)),
+    ("clf", MultinomialNB()),
+])
+nb_pipe.fit(X_train, y_train)
+
+rf_pipe = Pipeline([
+    ("vectorizer", TfidfVectorizer(max_features=10000, min_df=2, max_df=0.95)),
+    ("clf", RandomForestClassifier(
+        n_estimators=300, max_depth=50, min_samples_leaf=5,
+        max_features="sqrt", random_state=42,
+    )),
+])
+rf_pipe.fit(X_train, y_train)
+
+shap_results["TF-IDF + Naive Bayes"] = compute_or_load_shap(
+    "TF-IDF + Naive Bayes", nb_pipe, X_train, X_test,
+    method="kernel", n_explain=n_explain, nsamples=n_nsamples,
+)
+# Random Forest uses TreeSHAP: exact (not sampling-approximated) and much
+# faster for tree ensembles, and matches the project's methodology diagram
+# (KernelSHAP for Logistic Regression/Naive Bayes, TreeSHAP for Random Forest).
+shap_results["TF-IDF + Random Forest"] = compute_or_load_shap(
+    "TF-IDF + Random Forest", rf_pipe, X_train, X_test,
+    method="tree", n_explain=n_explain, nsamples=n_nsamples,
+)
+print("SHAP values ready for all three models:", list(shap_results.keys()))
+```
+
+```{python}
+#| label: fig-shap-cross-model
+# Compare mean |SHAP value| for the top tokens (by the best model's ranking)
+# across all three models, on the shared TF-IDF feature space.
+top_n = 15
+ref_name = best_model_name
+ref_shap = shap_results[ref_name]["shap_values_pos"]
+ref_features = shap_results[ref_name]["feature_names"]
+
+mean_abs_ref = np.abs(ref_shap).mean(axis=0)
+top_idx = np.argsort(-mean_abs_ref)[:top_n]
+top_tokens = ref_features[top_idx]
+
+model_names = list(shap_results.keys())
+comparison = np.zeros((len(model_names), top_n))
+for row, name in enumerate(model_names):
+    res = shap_results[name]
+    # feature_names are identical across models here (shared TF-IDF vectorizer),
+    # so token -> column index lookup is consistent.
+    name_to_col = {tok: col for col, tok in enumerate(res["feature_names"])}
+    mean_abs = np.abs(res["shap_values_pos"]).mean(axis=0)
+    comparison[row] = [mean_abs[name_to_col[tok]] for tok in top_tokens]
+
+fig, ax = plt.subplots(figsize=(9, 6))
+y_pos = np.arange(top_n)
+bar_height = 0.25
+colors = ["#1f77b4", "#ff7f0e", "#2ca02c"]
+for row, name in enumerate(model_names):
+    ax.barh(
+        y_pos + (row - 1) * bar_height, comparison[row][::-1],
+        height=bar_height, label=name, color=colors[row % len(colors)],
+    )
+ax.set_yticks(y_pos)
+ax.set_yticklabels(top_tokens[::-1])
+ax.set_xlabel("mean |SHAP value|")
+ax.set_title(
+    f"Cross-model SHAP comparison — top {top_n} tokens "
+    f"(ranked by {ref_name}), shared TF-IDF features"
+)
+ax.legend()
+plt.tight_layout()
+plt.show()
+```
+
+This early cross-model comparison, using the shared TF-IDF feature space,
+shows how much a token's SHAP attribution varies by model type — a
+starting point for the full cross-model consensus analysis (RQ3) planned
+later in this project.
 
 
 
@@ -515,6 +1057,10 @@ for name, model in models.items():
 \begin{center}
 \textbf{References}
 \end{center}
+```
+
+```{=html}
+<p style="text-align: center;"><strong>References</strong></p>
 ```
 
 ::: {#refs}

@@ -1,5 +1,5 @@
 """
-run_lstm.py
+run_lstm_ver4.py
 
 Trains and evaluates an LSTM (RNN) sentiment classifier on imdb_train.csv,
 using the same 80/20 stratified holdout split established in
