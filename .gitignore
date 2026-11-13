@@ -4,3 +4,5 @@ shap_cache/
 scripts/cv_model_comparison.py
 
 
+
+/.quarto/
