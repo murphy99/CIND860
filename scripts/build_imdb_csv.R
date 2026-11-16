@@ -25,7 +25,7 @@
 library(tidyverse)
 library(fs)
 
-data_dir <- "data/IMDB Movies/aclImdb"
+data_dir <- "data/aclImdb"
 output_csv <- "data/IMDB Movies/imdb_labeled_clean.csv"
 train_csv <- "data/IMDB Movies/imdb_train.csv"
 test_csv  <- "data/IMDB Movies/imdb_test.csv"
@@ -72,6 +72,33 @@ labeled <- meta |>
     text_clean = clean_review(text_raw),
     n_words    = str_count(text_clean, "\\S+")
   )
+
+# --- 2b. Drop exact train/test duplicates (cross-split only) ---------------
+# If a cleaned review's text is byte-identical between the train and test
+# splits, drop the train-side copy (test is left untouched). This does NOT
+# remove duplicates that occur within the same split.
+cross_split_dupe_text <- intersect(
+  labeled$text_clean[labeled$split == "train"],
+  labeled$text_clean[labeled$split == "test"]
+)
+n_before <- nrow(labeled)
+labeled <- labeled |>
+  filter(!(split == "train" & text_clean %in% cross_split_dupe_text))
+message(
+  "Dropped ", n_before - nrow(labeled),
+  " train-side rows that exactly duplicated a test-side review."
+)
+
+# --- 2c. Drop exact duplicates within each split (train and test) ----------
+# After the cross-split dedup above, also remove exact text_clean duplicates
+# occurring within the same split (keeps the first occurrence of each).
+n_before_within <- nrow(labeled)
+labeled <- labeled |>
+  distinct(split, text_clean, .keep_all = TRUE)
+message(
+  "Dropped ", n_before_within - nrow(labeled),
+  " additional within-split duplicate rows (train and test each deduplicated)."
+)
 
 # --- 3. Write the full cleaned labeled CSV ----------------------------------
 labeled |>
