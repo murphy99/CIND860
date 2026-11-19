@@ -209,8 +209,8 @@ from sklearn.model_selection import train_test_split
 # read in IMDB_Stars_Class.csv
 combined_dedup = pd.read_csv("data/IMDB Movies/IMDB_Stars_Class.csv")
 
-# drop binary 'label' field; this notebook works with the multi-class 'star' field instead
-combined_dedup = combined_dedup.drop(columns="label")
+# Note: IMDB_Stars_Class.csv has no binary 'label' column (only text_raw,
+# text_clean, star) -- this notebook works with the multi-class 'star' field.
 
 print(combined_dedup.shape)
 combined_dedup.head()
@@ -578,7 +578,7 @@ for key, results in cv_results.items():
         })
 
 results_df = pd.DataFrame(results_summary)
-results_df.to_csv("cv_results_comparison.csv", index=False)
+results_df.to_csv("mult_cv_results_comparison.csv", index=False)
 print("✓ Results saved to: cv_results_comparison.csv")
 print("\nResults Summary:")
 print(results_df.pivot_table(index='model', columns='metric', values='test_mean'))

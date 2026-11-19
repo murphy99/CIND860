@@ -260,7 +260,7 @@ print("test class balance:\n", y_test.value_counts(normalize=True))
 # Start from IMDB_Binary_Class (numeric 0/1 label) and attach split
 # from the row-aligned labeled_full (see data-loading cell above).
 combined = IMDB_Binary_Class.copy()
-#combined["split"] = labeled_full["split"].values
+combined["split"] = labeled_full["split"].values
 combined["n_words"] = combined["text_clean"].str.split().str.len()
 
 neg_len = combined.loc[combined["label"] == 0, "n_words"]
@@ -466,7 +466,7 @@ Settings (TF-IDF `max_features=10000`, `min_df=2`, `max_df=0.95`;
 (`scripts/cv_model_comparison.py`) for reference.
 
 ```{python}
-cv = StratifiedKFold(n_splits=5, shuffle=False)
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 ```
 
 ## Initial Results
