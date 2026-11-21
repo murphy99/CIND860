@@ -49,11 +49,11 @@ meta <- bind_rows(
 # --- 2. Read raw text and clean it ------------------------------------------
 clean_review <- function(text) {
   text |>
-    str_replace_all("<br\\s*/?>", " ") |>
-    str_replace_all("<[^>]+>", " ") |>
-    str_to_lower() |>
+    str_replace_all("<br\\s*/?>", " ") |> #strip html
+    str_replace_all("<[^>]+>", " ") |> #strip html
+    str_to_lower() |> #lower case
     str_replace_all("[^a-z0-9'\\s]", " ") |>
-    str_replace_all("\\s+", " ") |>
+    str_replace_all("\\s+", " ") |>          #White spaces
     str_replace_all("\\d+", "") %>%           # Remove numbers
     str_replace_all("[^a-zA-Z\\s]", "") %>%  # Keep only letters and spaces
     str_replace_all("\\s+", " ") %>%          # Replace multiple spaces with single space
